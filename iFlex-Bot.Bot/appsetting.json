@@ -1,0 +1,5 @@
+{
+  "BotConfiguration": {
+    "BotToken": "token should never be stored online"
+  }
+}

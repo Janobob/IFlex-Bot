@@ -4,15 +4,26 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>iFlex_Bot.Bot</RootNamespace>
+    <UserSecretsId>1078f169-68ea-4df9-8f1e-95ba4977bed3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.6" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Modules\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsetting.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
