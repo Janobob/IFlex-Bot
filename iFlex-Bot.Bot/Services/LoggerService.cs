@@ -62,36 +62,36 @@ namespace iFlex_Bot.Bot.Services
 
         public Task LogInformationAsync(string msg, object sender)
         {
-            return LogInformationAsync(new LogMessage(LogSeverity.Info, nameof(sender), msg));
+            return LogInformationAsync(new LogMessage(LogSeverity.Info, sender.GetType().Name, msg));
         }
 
         public Task LogWarningAsync(string msg, object sender)
         {
-            return LogWarningAsync(new LogMessage(LogSeverity.Warning, nameof(sender), msg));
+            return LogWarningAsync(new LogMessage(LogSeverity.Warning, sender.GetType().Name, msg));
 
         }
 
         public Task LogErrorAsync(string msg, object sender)
         {
-            return LogErrorAsync(new LogMessage(LogSeverity.Error, nameof(sender), msg));
+            return LogErrorAsync(new LogMessage(LogSeverity.Error, sender.GetType().Name, msg));
 
         }
 
         public Task LogDebugAsync(string msg, object sender)
         {
-            return LogDebugAsync(new LogMessage(LogSeverity.Debug, nameof(sender), msg));
+            return LogDebugAsync(new LogMessage(LogSeverity.Debug, sender.GetType().Name, msg));
 
         }
 
         public Task LogVerboseAsync(string msg, object sender)
         {
-            return LogVerboseAsync(new LogMessage(LogSeverity.Verbose, nameof(sender), msg));
+            return LogVerboseAsync(new LogMessage(LogSeverity.Verbose, sender.GetType().Name, msg));
 
         }
 
         public Task LogCriticalAsync(string msg, object sender)
         {
-            return LogCriticalAsync(new LogMessage(LogSeverity.Critical, nameof(sender), msg));
+            return LogCriticalAsync(new LogMessage(LogSeverity.Critical, sender.GetType().Name, msg));
         }
 
         public async Task LogAsync(LogMessage log)

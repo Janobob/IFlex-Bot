@@ -25,6 +25,7 @@ namespace iFlex_Bot.Bot
                 var logger = services.GetRequiredService<ILoggerService>();
                 var commandService = services.GetRequiredService<CommandService>();
                 var commandHandler = services.GetRequiredService<ICommandHandlerService>();
+                var levelService = services.GetRequiredService<ILevelService>();
                 var configuration = services.GetRequiredService<BotConfiguration>();
 
                 // Setup logging

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace iFlex_Bot.Bot.Services
 {
-    public class CommandHandlerService : ICommandHandlerService
+    public class CommandHandlerService : ICommandHandlerService, IDisposable
     {
         private readonly CommandService _commands;
         private readonly DiscordSocketClient _discord;
@@ -29,11 +29,18 @@ namespace iFlex_Bot.Bot.Services
             _logger = services.GetRequiredService<ILoggerService>();
             _services = services;
 
-            _commands.CommandExecuted += CommandExecutedAsync;
-            _discord.MessageReceived += MessageReceivedAsync;
+            _commands.CommandExecuted += OnCommandExecutedAsync;
+            _discord.MessageReceived += OnMessageReceivedAsync;
         }
 
-        public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
+        public async Task InitializeAsync()
+        {
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+
+            await _logger.LogInformationAsync("Listening to commands", this);
+        }
+
+        public async Task OnCommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
             if (!command.IsSpecified)
             {
@@ -51,14 +58,7 @@ namespace iFlex_Bot.Bot.Services
             await context.Channel.SendMessageAsync($"error: {result}");
         }
 
-        public async Task InitializeAsync()
-        {
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
-
-            await _logger.LogInformationAsync("Listening to commands", this);
-        }
-
-        public async Task MessageReceivedAsync(SocketMessage rawMessage)
+        public async Task OnMessageReceivedAsync(SocketMessage rawMessage)
         {
             // Ignore system messages, or messages from other bots
             if (!(rawMessage is SocketUserMessage message))
@@ -75,6 +75,12 @@ namespace iFlex_Bot.Bot.Services
 
             var context = new SocketCommandContext(_discord, message);
             await _commands.ExecuteAsync(context, argPos, _services);
+        }
+
+        public void Dispose()
+        {
+            _commands.CommandExecuted -= OnCommandExecutedAsync;
+            _discord.MessageReceived -= OnMessageReceivedAsync;
         }
     }
 }

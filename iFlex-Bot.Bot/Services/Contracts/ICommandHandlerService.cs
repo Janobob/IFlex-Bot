@@ -11,7 +11,7 @@ namespace iFlex_Bot.Bot.Services.Contracts
     public interface ICommandHandlerService
     {
         Task InitializeAsync();
-        Task MessageReceivedAsync(SocketMessage rawMessage);
-        Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result);
+        Task OnMessageReceivedAsync(SocketMessage rawMessage);
+        Task OnCommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result);
     }
 }

@@ -12,10 +12,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using iFlex_Bot.Data.Extensions;
+using System.Runtime.CompilerServices;
 
 namespace iFlex_Bot.Bot
 {
-    public class Startup
+    public static class Startup
     {
         public static ServiceProvider ConfigureServices()
         {
@@ -30,13 +31,22 @@ namespace iFlex_Bot.Bot
             return new ServiceCollection()
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
-                .AddSingleton<ILoggerService, LoggerService>()
-                .AddSingleton<ICommandHandlerService, CommandHandlerService>()
                 .AddSingleton(configuration)
                 .AddSingleton(botConfiguration)
                 .AddApplicationDbContext(configuration.GetValue<string>("ConnectionString"))
                 .AddRepositories()
+                .AddServices()
+                .AddSingleton<ILevelService, LevelService>()
                 .BuildServiceProvider();
+        }
+
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddSingleton<ILoggerService, LoggerService>();
+            services.AddSingleton<ICommandHandlerService, CommandHandlerService>();
+            services.AddSingleton<ILevelService, LevelService>();
+
+            return services;
         }
     }
 }
