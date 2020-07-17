@@ -11,6 +11,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using iFlex_Bot.Data.Extensions;
 
 namespace iFlex_Bot.Bot
 {
@@ -33,6 +34,8 @@ namespace iFlex_Bot.Bot
                 .AddSingleton<ICommandHandlerService, CommandHandlerService>()
                 .AddSingleton(configuration)
                 .AddSingleton(botConfiguration)
+                .AddApplicationDbContext("")
+                .AddRepositories()
                 .BuildServiceProvider();
         }
     }

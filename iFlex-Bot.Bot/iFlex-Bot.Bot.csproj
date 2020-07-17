@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\iFlex-Bot.Data\iFlex-Bot.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="appsetting.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

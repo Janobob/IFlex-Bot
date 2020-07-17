@@ -4,8 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iFlex-Bot.Bot", "iFlex-Bot.Bot\iFlex-Bot.Bot.csproj", "{E5195AEF-002D-4660-9155-F02180C04209}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B97C547C-C4DD-4C92-AE91-3CEA992EB94F} = {B97C547C-C4DD-4C92-AE91-3CEA992EB94F}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iFlex-Bot.Data", "iFlex-Bot.Data\iFlex-Bot.Data.csproj", "{B97C547C-C4DD-4C92-AE91-3CEA992EB94F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iFlex-Bot.Data", "iFlex-Bot.Data\iFlex-Bot.Data.csproj", "{B97C547C-C4DD-4C92-AE91-3CEA992EB94F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

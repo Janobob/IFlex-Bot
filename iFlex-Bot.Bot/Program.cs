@@ -20,6 +20,7 @@ namespace iFlex_Bot.Bot
         {
             using(var services = Startup.ConfigureServices())
             {
+                // get all required services from startup
                 var client = services.GetRequiredService<DiscordSocketClient>();
                 var logger = services.GetRequiredService<ILoggerService>();
                 var commandService = services.GetRequiredService<CommandService>();
@@ -30,9 +31,12 @@ namespace iFlex_Bot.Bot
                 client.Log += logger.LogAsync;
                 commandService.Log += logger.LogAsync;
 
+                // Login with client and setup message
                 await client.LoginAsync(TokenType.Bot, configuration.BotToken);
                 await client.StartAsync();
+                await client.SetGameAsync("Loving you :D");
 
+                // start listening to commands
                 await commandHandler.InitializeAsync();
 
                 // Prevent from closing
