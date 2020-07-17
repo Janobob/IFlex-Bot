@@ -1,4 +1,5 @@
-﻿using iFlex_Bot.Data.Repositories.Contracts;
+﻿using iFlex_Bot.Data.Repositories;
+using iFlex_Bot.Data.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,7 +18,7 @@ namespace iFlex_Bot.Data.Extensions
 
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            return services.AddSingleton<IChannelUpdateLogRepository, IChannelUpdateLogRepository>();
+            return services.AddSingleton<IChannelUpdateLogRepository, ChannelUpdateLogRepository>();
         }
     }
 }

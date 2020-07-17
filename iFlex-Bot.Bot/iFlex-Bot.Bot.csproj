@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>iFlex_Bot.Bot</RootNamespace>
+    <RootNamespace>iFlex-Bot.Bot</RootNamespace>
     <UserSecretsId>1078f169-68ea-4df9-8f1e-95ba4977bed3</UserSecretsId>
   </PropertyGroup>
 

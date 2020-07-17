@@ -34,7 +34,7 @@ namespace iFlex_Bot.Bot
                 .AddSingleton<ICommandHandlerService, CommandHandlerService>()
                 .AddSingleton(configuration)
                 .AddSingleton(botConfiguration)
-                .AddApplicationDbContext("")
+                .AddApplicationDbContext(configuration.GetValue<string>("ConnectionString"))
                 .AddRepositories()
                 .BuildServiceProvider();
         }

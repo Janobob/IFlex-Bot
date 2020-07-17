@@ -1,5 +1,6 @@
 {
   "BotConfiguration": {
     "BotToken": "token should never be stored online"
-  }
+  },
+  "Connectionstring": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=iFlexBot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
 }
