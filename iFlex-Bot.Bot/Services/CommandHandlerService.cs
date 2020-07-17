@@ -28,13 +28,13 @@ namespace iFlex_Bot.Bot.Services
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _logger = services.GetRequiredService<ILoggerService>();
             _services = services;
-
-            _commands.CommandExecuted += OnCommandExecutedAsync;
-            _discord.MessageReceived += OnMessageReceivedAsync;
         }
 
         public async Task InitializeAsync()
         {
+            _commands.CommandExecuted += OnCommandExecutedAsync;
+            _discord.MessageReceived += OnMessageReceivedAsync;
+
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 
             await _logger.LogInformationAsync("Listening to commands", this);

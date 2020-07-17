@@ -10,6 +10,8 @@ namespace iFlex_Bot.Data.Repositories.Contracts
     {
         IEnumerable<ChannelUpdateLog> GetChannelUpdateLogs();
         Task<IEnumerable<ChannelUpdateLog>> GetChannelUpdateLogsAsync();
+        IEnumerable<ChannelUpdateLog> GetChannelUpdateLogs(ulong userId);
+        Task<IEnumerable<ChannelUpdateLog>> GetChannelUpdateLogsAsync(ulong userId);
         ChannelUpdateLog GetChannelUpdateLogByID(int channelUpdateLogId);
         Task<ChannelUpdateLog> GetChannelUpdateLogByIDAsync(int channelUpdateLogId);
         void AddChannelUpdateLog(ChannelUpdateLog channelUpdateLog);

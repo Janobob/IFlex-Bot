@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,12 +52,22 @@ namespace iFlex_Bot.Data.Repositories
 
         public IEnumerable<ChannelUpdateLog> GetChannelUpdateLogs()
         {
-            return _context.ChannelUpdateLogs.ToList();
+            return _context.ChannelUpdateLogs.OrderByDescending(x => x.IssueTime).ToList();
         }
 
         public async Task<IEnumerable<ChannelUpdateLog>> GetChannelUpdateLogsAsync()
         {
-            return await _context.ChannelUpdateLogs.ToListAsync();
+            return await _context.ChannelUpdateLogs.OrderByDescending(x => x.IssueTime).ToListAsync();
+        }
+
+        public IEnumerable<ChannelUpdateLog> GetChannelUpdateLogs(ulong userId)
+        {
+            return _context.ChannelUpdateLogs.Where(x => x.UserId == userId).OrderByDescending(x => x.IssueTime).ToList();
+        }
+
+        public async Task<IEnumerable<ChannelUpdateLog>> GetChannelUpdateLogsAsync(ulong userId)
+        {
+            return await _context.ChannelUpdateLogs.Where(x => x.UserId == userId).OrderByDescending(x => x.IssueTime).ToListAsync();
         }
 
         public ChannelUpdateLog GetChannelUpdateLogByID(int channelUpdateLogId)

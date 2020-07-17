@@ -1,10 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using iFlex_Bot.Bot.BackgroundServices;
 using iFlex_Bot.Bot.Configuration;
 using iFlex_Bot.Bot.Services;
 using iFlex_Bot.Bot.Services.Contracts;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Net.WebSockets;
 using System.Threading;
@@ -14,35 +16,36 @@ namespace iFlex_Bot.Bot
 {
     public class Program
     {
-        public static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
+        public static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
 
-        public async Task MainAsync()
+        public async Task MainAsync(string[] args)
         {
-            using(var services = Startup.ConfigureServices())
+            var builder = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, services) =>
             {
-                // get all required services from startup
-                var client = services.GetRequiredService<DiscordSocketClient>();
-                var logger = services.GetRequiredService<ILoggerService>();
-                var commandService = services.GetRequiredService<CommandService>();
-                var commandHandler = services.GetRequiredService<ICommandHandlerService>();
-                var levelService = services.GetRequiredService<ILevelService>();
-                var configuration = services.GetRequiredService<BotConfiguration>();
+                Startup.ConfigureServices(services);
+            }).Build();
 
-                // Setup logging
-                client.Log += logger.LogAsync;
-                commandService.Log += logger.LogAsync;
+            var client = builder.Services.GetRequiredService<DiscordSocketClient>();
+            var logger = builder.Services.GetRequiredService<ILoggerService>();
+            var commandService = builder.Services.GetRequiredService<CommandService>();
+            var commandHandler = builder.Services.GetRequiredService<ICommandHandlerService>();
+            var levelService = builder.Services.GetRequiredService<ILevelService>();
+            var configuration = builder.Services.GetRequiredService<BotConfiguration>();
 
-                // Login with client and setup message
-                await client.LoginAsync(TokenType.Bot, configuration.BotToken);
-                await client.StartAsync();
-                await client.SetGameAsync("Loving you :D");
+            // Setup logging
+            client.Log += logger.LogAsync;
+            commandService.Log += logger.LogAsync;
 
-                // start listening to commands
-                await commandHandler.InitializeAsync();
+            // Login with client and setup message
+            await client.LoginAsync(TokenType.Bot, configuration.BotToken);
+            await client.StartAsync();
+            await client.SetGameAsync("Loving you :D");
 
-                // Prevent from closing
-                await Task.Delay(Timeout.Infinite);
-            }
-        }  
+            // start listening to commands
+            await commandHandler.InitializeAsync();
+            await levelService.InitializeAsync();
+
+            await builder.RunAsync();
+        }
     }
 }

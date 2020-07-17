@@ -13,12 +13,13 @@ using System.Text;
 using System.Threading.Tasks;
 using iFlex_Bot.Data.Extensions;
 using System.Runtime.CompilerServices;
+using iFlex_Bot.Bot.BackgroundServices;
 
 namespace iFlex_Bot.Bot
 {
     public static class Startup
     {
-        public static ServiceProvider ConfigureServices()
+        public static void ConfigureServices(IServiceCollection services)
         {
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -28,15 +29,14 @@ namespace iFlex_Bot.Bot
 
             var botConfiguration = configuration.GetSection("BotConfiguration").Get<BotConfiguration>();
 
-            return new ServiceCollection()
-                .AddSingleton<DiscordSocketClient>()
+            services.AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
                 .AddSingleton(configuration)
                 .AddSingleton(botConfiguration)
                 .AddApplicationDbContext(configuration.GetValue<string>("ConnectionString"))
                 .AddRepositories()
                 .AddServices()
-                .AddSingleton<ILevelService, LevelService>()
+                .AddBackgroundServices()
                 .BuildServiceProvider();
         }
 
@@ -45,6 +45,13 @@ namespace iFlex_Bot.Bot
             services.AddSingleton<ILoggerService, LoggerService>();
             services.AddSingleton<ICommandHandlerService, CommandHandlerService>();
             services.AddSingleton<ILevelService, LevelService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddBackgroundServices(this IServiceCollection services)
+        {
+            services.AddHostedService<LevelCheckBackgroundService>();
 
             return services;
         }

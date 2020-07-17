@@ -13,6 +13,11 @@ namespace iFlex_Bot.Data
             Database.EnsureCreated();
         }
 
-        public DbSet<ChannelUpdateLog> ChannelUpdateLogs { get; set; } 
+        public DbSet<ChannelUpdateLog> ChannelUpdateLogs { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
