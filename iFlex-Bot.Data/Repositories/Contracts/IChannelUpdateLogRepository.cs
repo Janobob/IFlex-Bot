@@ -6,23 +6,15 @@ using System.Threading.Tasks;
 
 namespace iFlex_Bot.Data.Repositories.Contracts
 {
-    public interface IChannelUpdateLogRepository : IRepository
+    public interface IChannelUpdateLogRepository
     {
-        IEnumerable<ChannelUpdateLog> GetChannelUpdateLogs();
         Task<IEnumerable<ChannelUpdateLog>> GetChannelUpdateLogsAsync();
-        IEnumerable<ChannelUpdateLog> GetChannelUpdateLogs(ulong userId);
-        Task<IEnumerable<ChannelUpdateLog>> GetChannelUpdateLogsAsync(ulong userId);
-        ChannelUpdateLog GetChannelUpdateLogByID(int channelUpdateLogId);
-        Task<ChannelUpdateLog> GetChannelUpdateLogByIDAsync(int channelUpdateLogId);
-        void AddChannelUpdateLog(ChannelUpdateLog channelUpdateLog);
+        Task<IEnumerable<ChannelUpdateLog>> GetChannelUpdateLogsFromUserAsync(ulong userId);
+        Task<ChannelUpdateLog> GetChannelUpdateLogByIdAsync(int channelUpdateLogId);
         Task AddChannelUpdateLogAsync(ChannelUpdateLog channelUpdateLog);
-        void DeleteChannelUpdateLog(ChannelUpdateLog channelUpdateLog);
         Task DeleteChannelUpdateLogAsync(ChannelUpdateLog channelUpdateLog);
-        void DeleteChannelUpdateLogById(int channelUpdateLogId);
         Task DeleteChannelUpdateLogByIdAsync(int channelUpdateLogId);
-        void UpdateChannelUpdateLog(ChannelUpdateLog channelUpdateLog);
         Task UpdateChannelUpdateLogAsync(ChannelUpdateLog channelUpdateLog);
-        void SaveChanges();
         Task SaveChangesAsync();
     }
 }

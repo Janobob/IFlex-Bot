@@ -42,8 +42,11 @@ namespace iFlex_Bot.Bot
             await client.SetGameAsync("Loving you :D");
 
             // start listening to commands
-            await commandHandler.InitializeAsync();
-            await levelService.InitializeAsync();
+            client.Ready += async () =>
+            {
+                await commandHandler.InitializeAsync();
+                await levelService.InitializeAsync();
+            };
 
             await builder.RunAsync();
         }

@@ -52,6 +52,7 @@ namespace iFlex_Bot.Bot
         public static IServiceCollection AddBackgroundServices(this IServiceCollection services)
         {
             services.AddHostedService<LevelCheckBackgroundService>();
+            services.AddHostedService<UserImportBackgroundService>();
 
             return services;
         }

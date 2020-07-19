@@ -15,7 +15,7 @@ namespace iFlex_Bot.Data.Entities
         public DateTime IssueTime { get; set; }
 
         [Required]
-        public ulong UserId { get; set; }
+        public ulong DiscordUserId { get; set; }
 
         [Required]
         public ChannelUpdateLogType Type { get; set; }
