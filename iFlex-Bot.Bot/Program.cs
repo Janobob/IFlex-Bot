@@ -5,6 +5,8 @@ using iFlex_Bot.Bot.BackgroundServices;
 using iFlex_Bot.Bot.Configuration;
 using iFlex_Bot.Bot.Services;
 using iFlex_Bot.Bot.Services.Contracts;
+using iFlex_Bot.Data.Entities;
+using iFlex_Bot.Data.Repositories.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -31,6 +33,7 @@ namespace iFlex_Bot.Bot
             var commandHandler = builder.Services.GetRequiredService<ICommandHandlerService>();
             var levelService = builder.Services.GetRequiredService<ILevelService>();
             var configuration = builder.Services.GetRequiredService<BotConfiguration>();
+            var applicationStatusRepository = builder.Services.GetRequiredService<IApplicationStatusRepository>();
 
             // Setup logging
             client.Log += logger.LogAsync;
@@ -40,6 +43,13 @@ namespace iFlex_Bot.Bot
             await client.LoginAsync(TokenType.Bot, configuration.BotToken);
             await client.StartAsync();
             await client.SetGameAsync("Loving you :D");
+
+            await applicationStatusRepository.AddApplicationStatusAsync(new ApplicationStatus
+            {
+                IssueTime = DateTime.Now,
+                Type = ApplicationStatusType.Started
+            });
+            await applicationStatusRepository.SaveChangesAsync();
 
             // start listening to commands
             client.Ready += async () =>

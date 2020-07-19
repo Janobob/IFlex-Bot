@@ -16,10 +16,19 @@ namespace iFlex_Bot.Data
         public DbSet<ChannelUpdateLog> ChannelUpdateLogs { get; set; }
         public DbSet<IFlexDiscordUser> IFlexDiscordUsers { get; set; }
         public DbSet<ActivityLevel> ActivityLevels { get; set; }
+        public DbSet<ApplicationStatus> ApplicationStatus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ApplicationStatus>().HasData(
+                new ApplicationStatus
+                {
+                    Id = 1,
+                    IssueTime = DateTime.Now,
+                    Type = ApplicationStatusType.Stopped
+                });
 
             modelBuilder.Entity<ActivityLevel>().HasData(
                 new ActivityLevel

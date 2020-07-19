@@ -1,11 +1,15 @@
 ﻿using Discord.WebSocket;
+using iFlex_Bot.Bot.Configuration;
 using iFlex_Bot.Bot.Helpers;
 using iFlex_Bot.Bot.Services.Contracts;
 using iFlex_Bot.Data.Entities;
 using iFlex_Bot.Data.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -19,20 +23,29 @@ namespace iFlex_Bot.Bot.Services
         private readonly ILoggerService _logger;
         private readonly IChannelUpdateLogRepository _channelUpdateLogRepository;
         private readonly IIFlexDiscordUserRepository _iFlexDiscordUserRepository;
+        private readonly IApplicationStatusRepository _applicationStatusRepository;
 
         public ICollection<ulong> GetLoggedInUserIds { get; } = new List<ulong>();
 
-        public LevelService(DiscordSocketClient discord, ILoggerService logger, IChannelUpdateLogRepository channelUpdateLogRepository, IIFlexDiscordUserRepository iFlexDiscordUserRepository)
+        public LevelService(
+            DiscordSocketClient discord, 
+            ILoggerService logger, 
+            IChannelUpdateLogRepository channelUpdateLogRepository, 
+            IIFlexDiscordUserRepository iFlexDiscordUserRepository,
+            IApplicationStatusRepository applicationStatusRepository)
         {
             _discord = discord;
             _logger = logger;
             _channelUpdateLogRepository = channelUpdateLogRepository;
             _iFlexDiscordUserRepository = iFlexDiscordUserRepository;
+            _applicationStatusRepository = applicationStatusRepository;
         }
 
         public async Task InitializeAsync()
         {
             _discord.UserVoiceStateUpdated += OnUserVoiceStateUpdated;
+
+            var lastRunTime = await _applicationStatusRepository.GetLastApplicationStatusAsync();
 
             foreach (var user in await _iFlexDiscordUserRepository.GetIFlexDiscordUsersAsync())
             {
@@ -49,12 +62,12 @@ namespace iFlex_Bot.Bot.Services
                     {
                         DiscordUserId = user.DiscordId,
                         Type = ChannelUpdateLogType.Left,
-                        IssueTime = lastRegister.IssueTime.AddSeconds(5)
+                        IssueTime = lastRunTime.IssueTime
                     });
                 }
             }
 
-            foreach(var guild in _discord.Guilds)
+            foreach (var guild in _discord.Guilds)
             {
                 foreach (var userinVoiceChannel in guild.VoiceChannels.SelectMany(x => x.Users).ToList())
                 {
@@ -103,6 +116,11 @@ namespace iFlex_Bot.Bot.Services
         public void Dispose()
         {
             _discord.UserVoiceStateUpdated -= OnUserVoiceStateUpdated;
+            _applicationStatusRepository.AddApplicationStatusAsync(new ApplicationStatus { 
+                IssueTime = DateTime.Now,
+                Type = ApplicationStatusType.Stopped
+            });
+            _applicationStatusRepository.SaveChangesAsync();
         }
     }
 }

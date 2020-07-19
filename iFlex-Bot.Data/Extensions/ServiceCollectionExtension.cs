@@ -21,6 +21,7 @@ namespace iFlex_Bot.Data.Extensions
             services.AddSingleton<IChannelUpdateLogRepository, ChannelUpdateLogRepository>();
             services.AddSingleton<IIFlexDiscordUserRepository, IFlexDiscordUserRepository>();
             services.AddSingleton<IActivityLevelRepository, ActivityLevelRepository>();
+            services.AddSingleton<IApplicationStatusRepository, ApplicationStatusRepository>();
 
             return services;
         }

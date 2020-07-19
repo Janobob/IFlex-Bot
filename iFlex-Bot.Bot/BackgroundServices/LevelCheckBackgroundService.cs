@@ -23,11 +23,11 @@ namespace iFlex_Bot.Bot.BackgroundServices
         private readonly ILoggerService _logger;
 
         public LevelCheckBackgroundService(
-            DiscordSocketClient discord, 
-            ILevelService levelService, 
-            IChannelUpdateLogRepository channelUpdateLogRepository, 
-            IIFlexDiscordUserRepository iFlexDiscordUserRepository, 
-            IActivityLevelRepository activityLevelRepository, 
+            DiscordSocketClient discord,
+            ILevelService levelService,
+            IChannelUpdateLogRepository channelUpdateLogRepository,
+            IIFlexDiscordUserRepository iFlexDiscordUserRepository,
+            IActivityLevelRepository activityLevelRepository,
             ILoggerService logger)
         {
             _discord = discord;
@@ -57,13 +57,22 @@ namespace iFlex_Bot.Bot.BackgroundServices
                             user.PlayTimeInSeconds = Math.Ceiling(PlayTimeHelper.CalculatePlayTime(logs, now));
                             if (user.Level < maxLevel && user.PlayTimeInSeconds >= activityLevels.ElementAt(user.Level).SecondsToAchieve)
                             {
+                                try
+                                {
+                                    var message = await _discord.GetUser(userId).SendMessageAsync($"Du hast ein neues Level erreicht: Level {user.Level + 1} mit {user.PlayTimeInSeconds} aktiven Sekunden auf dem Server!");
+                                }
+                                catch (Exception e)
+                                {
+                                    await _logger.LogErrorAsync($"Error occured: {e.Message}", this);
+                                    continue;
+                                }
                                 user.Level += 1;
-                                await _discord.GetUser(userId).SendMessageAsync($"Du hast ein neues Level erreicht: Level {user.Level} mit {user.PlayTimeInSeconds} aktiven Sekunden auf dem Server!");
                             }
                         }
                     }
                 }
-                catch(Exception e){
+                catch (Exception e)
+                {
                     await _logger.LogErrorAsync($"Error occured: {e.Message}", this);
                 }
 
