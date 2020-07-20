@@ -67,19 +67,27 @@ namespace iFlex_Bot.Bot.BackgroundServices
                                 {
                                     var discordUser = _discord.GetUser(userId);
                                     var iflexServer = _discord.Guilds.FirstOrDefault(x => x.Name == "iFlex Esports");
-                                    var iflexMembers = iflexServer.Roles.FirstOrDefault(x => x.Name == "iFx-Member").Members.Select(x => x.Id);
+                                    var iflexRole = iflexServer.Roles.FirstOrDefault(x => x.Name == "iFx-Member");
+                                    var iflexMembers = iflexRole.Members;
+
+                                    var newrole = iflexServer.Roles.FirstOrDefault(x => x.Name.StartsWith($"Level {user.Level + 1}"));
+                                    var lastrole = iflexServer.Roles.FirstOrDefault(x => x.Name.StartsWith($"Level {user.Level}"));
+
                                     if (!discordUser.IsBot && !discordUser.IsWebhook)
                                     {
-                                        var message = await discordUser.SendMessageAsync($"Du hast ein neues Level erreicht: Level {user.Level + 1} mit {user.PlayTimeInSeconds} aktiven Sekunden auf dem Server! \n {(iflexMembers.Contains(user.DiscordId) ? level.MemberMessage : level.GuestMessage)}");
-                                        await iflexServer.Users.FirstOrDefault(x => x.Id == user.DiscordId).AddRoleAsync(iflexServer.Roles.FirstOrDefault(x => x.Name.StartsWith($"Level {user.Level += 1}")));
-                                        await iflexServer.Users.FirstOrDefault(x => x.Id == user.DiscordId).RemoveRoleAsync(iflexServer.Roles.FirstOrDefault(x => x.Name.StartsWith($"Level {user.Level}")));
+                                        await iflexServer.Users.FirstOrDefault(x => x.Id == user.DiscordId).AddRoleAsync(newrole);
+                                        if(lastrole != null)
+                                        {
+                                            await iflexServer.Users.FirstOrDefault(x => x.Id == user.DiscordId).RemoveRoleAsync(lastrole);
+                                        }
+                                        user.Level += 1;
+                                        var message = await discordUser.SendMessageAsync($"Du hast ein neues Level erreicht: Level {user.Level} mit {user.PlayTimeInSeconds} aktiven Sekunden auf dem Server! \n{(iflexMembers.Any(x => x.Id == user.DiscordId) ? level.MemberMessage : level.GuestMessage)}");
                                     }
                                 }
                                 catch (Exception e)
                                 {
                                     await _logger.LogErrorAsync($"Error occured: {e.Message} for {user.Username}", this);
                                 }
-                                user.Level += 1;
                             }
                         }
                     }

@@ -109,7 +109,7 @@ namespace iFlex_Bot.Data
                     Name = "Hardcore Gamer",
                     GuestMessage = "Nur die Starken halten durch - du hast ein ganzes Jahr hier auf dem Server verbracht und dies ist nur die aktive Zeit ...",
                     MemberMessage = "Nur die Starken halten durch - du hast ein ganzes Jahr hier auf dem Server verbracht und dies ist nur die aktive Zeit ...",
-                    Order = 1,
+                    Order = 9,
                     SecondsToAchieve = TimeSpan.FromDays(365).TotalSeconds
                 },
                 new ActivityLevel
