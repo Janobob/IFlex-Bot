@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using iFlex_Bot.Bot.BackgroundServices;
 using iFlex_Bot.Bot.Configuration;
+using iFlex_Bot.Bot.Helpers;
 using iFlex_Bot.Bot.Services;
 using iFlex_Bot.Bot.Services.Contracts;
 using iFlex_Bot.Data.Entities;
@@ -56,6 +57,8 @@ namespace iFlex_Bot.Bot
             {
                 await commandHandler.InitializeAsync();
                 await levelService.InitializeAsync();
+                //await DiscordRoleHelper.GenerateActivityRoleForDiscordServerAsync(client, await builder.Services.GetRequiredService<IActivityLevelRepository>().GetActivityLevelsAsync());
+                //await DiscordRoleHelper.CleanupActivityRolesAsync(client);
             };
 
             await builder.RunAsync();

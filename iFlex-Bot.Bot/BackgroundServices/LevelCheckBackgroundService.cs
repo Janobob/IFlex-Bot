@@ -2,7 +2,11 @@
 using Discord.WebSocket;
 using iFlex_Bot.Bot.Helpers;
 using iFlex_Bot.Bot.Services.Contracts;
+using iFlex_Bot.Data;
+using iFlex_Bot.Data.Repositories;
 using iFlex_Bot.Data.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
@@ -25,17 +29,18 @@ namespace iFlex_Bot.Bot.BackgroundServices
         public LevelCheckBackgroundService(
             DiscordSocketClient discord,
             ILevelService levelService,
-            IChannelUpdateLogRepository channelUpdateLogRepository,
-            IIFlexDiscordUserRepository iFlexDiscordUserRepository,
-            IActivityLevelRepository activityLevelRepository,
-            ILoggerService logger)
+            ILoggerService logger,
+            IConfiguration configuration)
         {
             _discord = discord;
             _levelService = levelService;
-            _channelUpdateLogRepository = channelUpdateLogRepository;
-            _iFlexDiscordUserRepository = iFlexDiscordUserRepository;
-            _activityLevelRepository = activityLevelRepository;
             _logger = logger;
+
+            var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(configuration.GetValue<string>("ConnectionString")).Options);
+
+            _channelUpdateLogRepository = new ChannelUpdateLogRepository(context);
+            _iFlexDiscordUserRepository = new IFlexDiscordUserRepository(context);
+            _activityLevelRepository = new ActivityLevelRepository(context);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -54,17 +59,25 @@ namespace iFlex_Bot.Bot.BackgroundServices
                         {
                             var logs = await _channelUpdateLogRepository.GetChannelUpdateLogsFromUserAsync(userId);
                             var user = await _iFlexDiscordUserRepository.GetIFlexDiscordUserByDiscordIdAsync(userId);
+                            var level = activityLevels.ElementAt(user.Level);
                             user.PlayTimeInSeconds = Math.Ceiling(PlayTimeHelper.CalculatePlayTime(logs, now));
-                            if (user.Level < maxLevel && user.PlayTimeInSeconds >= activityLevels.ElementAt(user.Level).SecondsToAchieve)
+                            if (user.Level < maxLevel && user.PlayTimeInSeconds >= level.SecondsToAchieve)
                             {
                                 try
                                 {
-                                    var message = await _discord.GetUser(userId).SendMessageAsync($"Du hast ein neues Level erreicht: Level {user.Level + 1} mit {user.PlayTimeInSeconds} aktiven Sekunden auf dem Server!");
+                                    var discordUser = _discord.GetUser(userId);
+                                    var iflexServer = _discord.Guilds.FirstOrDefault(x => x.Name == "iFlex Esports");
+                                    var iflexMembers = iflexServer.Roles.FirstOrDefault(x => x.Name == "iFx-Member").Members.Select(x => x.Id);
+                                    if (!discordUser.IsBot && !discordUser.IsWebhook)
+                                    {
+                                        var message = await discordUser.SendMessageAsync($"Du hast ein neues Level erreicht: Level {user.Level + 1} mit {user.PlayTimeInSeconds} aktiven Sekunden auf dem Server! \n {(iflexMembers.Contains(user.DiscordId) ? level.MemberMessage : level.GuestMessage)}");
+                                        await iflexServer.Users.FirstOrDefault(x => x.Id == user.DiscordId).AddRoleAsync(iflexServer.Roles.FirstOrDefault(x => x.Name.StartsWith($"Level {user.Level += 1}")));
+                                        await iflexServer.Users.FirstOrDefault(x => x.Id == user.DiscordId).RemoveRoleAsync(iflexServer.Roles.FirstOrDefault(x => x.Name.StartsWith($"Level {user.Level}")));
+                                    }
                                 }
                                 catch (Exception e)
                                 {
-                                    await _logger.LogErrorAsync($"Error occured: {e.Message}", this);
-                                    continue;
+                                    await _logger.LogErrorAsync($"Error occured: {e.Message} for {user.Username}", this);
                                 }
                                 user.Level += 1;
                             }
@@ -78,7 +91,7 @@ namespace iFlex_Bot.Bot.BackgroundServices
 
 
                 await _iFlexDiscordUserRepository.SaveChangesAsync();
-                await _logger.LogInformationAsync("running", this);
+                await _logger.LogInformationAsync("is running", this);
                 await Task.Delay(TimeSpan.FromSeconds(2));
             }
         }

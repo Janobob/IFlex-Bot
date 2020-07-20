@@ -52,8 +52,7 @@ namespace iFlex_Bot.Bot
         public static IServiceCollection AddBackgroundServices(this IServiceCollection services)
         {
             services.AddHostedService<LevelCheckBackgroundService>();
-            // TODO: Erros due ApplicationDbContext => DbLocks
-            //services.AddHostedService<UserImportBackgroundService>();
+            services.AddHostedService<UserImportBackgroundService>();
 
             return services;
         }

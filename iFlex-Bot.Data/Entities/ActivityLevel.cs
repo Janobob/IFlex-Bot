@@ -11,6 +11,15 @@ namespace iFlex_Bot.Data.Entities
         public int Id { get; set; }
 
         [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string GuestMessage { get; set; }
+
+        [Required]
+        public string MemberMessage { get; set; }
+
+        [Required]
         public int Order { get; set; }
 
         [Required]

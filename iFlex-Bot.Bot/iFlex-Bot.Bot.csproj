@@ -18,10 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\iFlex-Bot.Data\iFlex-Bot.Data.csproj" />
   </ItemGroup>
 
