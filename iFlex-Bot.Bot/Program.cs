@@ -43,7 +43,7 @@ namespace iFlex_Bot.Bot
             // Login with client and setup message
             await client.LoginAsync(TokenType.Bot, configuration.BotTestToken);
             await client.StartAsync();
-            await client.SetGameAsync("Loving you :D");
+            await client.SetGameAsync($"mit {configuration.Prefix}help kannst du die Kommandos abrufen");
 
             await applicationStatusRepository.AddApplicationStatusAsync(new ApplicationStatus
             {

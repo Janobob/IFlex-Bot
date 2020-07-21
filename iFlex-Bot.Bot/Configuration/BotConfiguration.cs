@@ -8,6 +8,6 @@ namespace iFlex_Bot.Bot.Configuration
     {
         public string BotToken { get; set; }
         public string BotTestToken { get; set; }
-        public DateTime LastRunTime { get; set; }
+        public string Prefix { get; set; }
     }
 }

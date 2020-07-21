@@ -5,14 +5,9 @@ using iFlex_Bot.Bot.Services;
 using iFlex_Bot.Bot.Services.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using iFlex_Bot.Data.Extensions;
-using System.Runtime.CompilerServices;
 using iFlex_Bot.Bot.BackgroundServices;
 
 namespace iFlex_Bot.Bot
@@ -48,6 +43,7 @@ namespace iFlex_Bot.Bot
             services.AddSingleton<ILoggerService>(new LoggerService(_configuration.GetValue<bool>("OptionalLogging")));
             services.AddSingleton<ICommandHandlerService, CommandHandlerService>();
             services.AddSingleton<ILevelService, LevelService>();
+            services.AddSingleton<IUserService, UserService>();
 
             return services;
         }

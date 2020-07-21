@@ -11,12 +11,14 @@ using System.Threading.Tasks;
 namespace iFlex_Bot.Bot.Modules
 {
     [Group("playtime")]
+    [Summary("Erhalte Infos über deine aktuelle Spielzeit.")]
     public class PlayTimeModule : ModuleBase<SocketCommandContext>
     {
         public IIFlexDiscordUserRepository IFlexDiscordUserRepository { get; set; }
         public IActivityLevelRepository ActivityLevelRepository { get; set; }
 
         [Command("")]
+        [Summary("Deine aktuelle Spielzeit und Level auf dem Server.")]
         public async Task GetPlayTime()
         {
             var user = await IFlexDiscordUserRepository.GetIFlexDiscordUserByDiscordIdAsync(Context.User.Id);
@@ -26,6 +28,7 @@ namespace iFlex_Bot.Bot.Modules
 
         [Command("tonextLevel")]
         [Alias("next", "n")]
+        [Summary("Wie viele Sekunden dir bis zum nächsten Level fehlen.")]
         public async Task GetTimeToNextLevel()
         {
             var user = await IFlexDiscordUserRepository.GetIFlexDiscordUserByDiscordIdAsync(Context.User.Id);
