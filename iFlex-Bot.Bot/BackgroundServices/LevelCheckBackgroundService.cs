@@ -36,7 +36,7 @@ namespace iFlex_Bot.Bot.BackgroundServices
             _levelService = levelService;
             _logger = logger;
 
-            var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(configuration.GetValue<string>("ConnectionString")).Options);
+            var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(configuration.GetValue<string>("TestConnectionString")).Options);
 
             _channelUpdateLogRepository = new ChannelUpdateLogRepository(context);
             _iFlexDiscordUserRepository = new IFlexDiscordUserRepository(context);
@@ -81,7 +81,11 @@ namespace iFlex_Bot.Bot.BackgroundServices
                                             await iflexServer.Users.FirstOrDefault(x => x.Id == user.DiscordId).RemoveRoleAsync(lastrole);
                                         }
                                         user.Level += 1;
-                                        var message = await discordUser.SendMessageAsync($"Du hast ein neues Level erreicht: Level {user.Level} mit {user.PlayTimeInSeconds} aktiven Sekunden auf dem Server! \n{(iflexMembers.Any(x => x.Id == user.DiscordId) ? level.MemberMessage : level.GuestMessage)}");
+                                        await _logger.LogInformationAsync($"New level for {user.Username}", this);
+                                        if (user.AllowMessages)
+                                        {
+                                            await discordUser.SendMessageAsync($"Du hast ein neues Level erreicht: Level {user.Level} mit {user.PlayTimeInSeconds} aktiven Sekunden auf dem Server! \n{(iflexMembers.Any(x => x.Id == user.DiscordId) ? level.MemberMessage : level.GuestMessage)}");
+                                        }
                                     }
                                 }
                                 catch (Exception e)
@@ -99,7 +103,7 @@ namespace iFlex_Bot.Bot.BackgroundServices
 
 
                 await _iFlexDiscordUserRepository.SaveChangesAsync();
-                await _logger.LogInformationAsync("is running", this);
+                await _logger.LogOptionalAsync("is running", this);
                 await Task.Delay(TimeSpan.FromSeconds(2));
             }
         }

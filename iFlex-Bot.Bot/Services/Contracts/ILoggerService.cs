@@ -20,6 +20,8 @@ namespace iFlex_Bot.Bot.Services.Contracts
         Task LogVerboseAsync(string msg, object sender);
         Task LogCriticalAsync(LogMessage log);
         Task LogCriticalAsync(string msg, object sender);
+        Task LogOptionalAsync(LogMessage log);
+        Task LogOptionalAsync(string msg, object sender);
         Task LogAsync(LogMessage log);
     }
 }

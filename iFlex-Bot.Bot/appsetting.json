@@ -1,6 +1,9 @@
 {
   "BotConfiguration": {
-    "BotToken": "token should never be stored online"
+    "BotToken": "token should never be stored online",
+    "BotTestToken": "token should never be stored online"
   },
-  "Connectionstring": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=iFlexBot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+  "OptionalLogging": false,
+  "ConnectionString": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=iFlexBot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
+  "TestConnectionString": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=iFlexBotTest;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
 }

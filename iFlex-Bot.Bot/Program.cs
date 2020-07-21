@@ -41,7 +41,7 @@ namespace iFlex_Bot.Bot
             commandService.Log += logger.LogAsync;
 
             // Login with client and setup message
-            await client.LoginAsync(TokenType.Bot, configuration.BotToken);
+            await client.LoginAsync(TokenType.Bot, configuration.BotTestToken);
             await client.StartAsync();
             await client.SetGameAsync("Loving you :D");
 

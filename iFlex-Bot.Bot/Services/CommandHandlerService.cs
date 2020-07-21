@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using iFlex_Bot.Bot.Modules;
 using iFlex_Bot.Bot.Services.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -19,7 +20,7 @@ namespace iFlex_Bot.Bot.Services
         private readonly IServiceProvider _services;
         private readonly ILoggerService _logger;
 
-        private const string Prefix = "!flex";
+        private const string Prefix = "-";
 
         public CommandHandlerService(IServiceProvider services)
         {
@@ -69,9 +70,10 @@ namespace iFlex_Bot.Bot.Services
             {
                 return;
             }
-
+            
+            // determine if the message has a valid prefix, and adjust argPos based on prefix
             var argPos = 0;
-            if (!message.HasStringPrefix(Prefix, ref argPos)) return;
+            if (!(message.HasMentionPrefix(_discord.CurrentUser, ref argPos) || message.HasStringPrefix(Prefix, ref argPos))) return;
 
             var context = new SocketCommandContext(_discord, message);
             await _commands.ExecuteAsync(context, argPos, _services);

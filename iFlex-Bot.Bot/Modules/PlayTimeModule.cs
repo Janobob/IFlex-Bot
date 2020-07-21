@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 namespace iFlex_Bot.Bot.Modules
 {
     [Group("playtime")]
-    [Alias("time", "t")]
     public class PlayTimeModule : ModuleBase<SocketCommandContext>
     {
         public IIFlexDiscordUserRepository IFlexDiscordUserRepository { get; set; }
@@ -22,7 +21,7 @@ namespace iFlex_Bot.Bot.Modules
         {
             var user = await IFlexDiscordUserRepository.GetIFlexDiscordUserByDiscordIdAsync(Context.User.Id);
 
-            await ReplyAsync($"Du bist Level {user.Level} mit {user.PlayTimeInSeconds} Sekunden akiver Zeit auf dem Server.");
+            await ReplyAsync($"Du bist Level {user.Level} mit {user.PlayTimeInSeconds} Sekunden aktiver Zeit auf dem Server.");
         }
 
         [Command("tonextLevel")]
@@ -32,7 +31,7 @@ namespace iFlex_Bot.Bot.Modules
             var user = await IFlexDiscordUserRepository.GetIFlexDiscordUserByDiscordIdAsync(Context.User.Id);
             var nextActivityLevel = (await ActivityLevelRepository.GetActivityLevelsAsync()).FirstOrDefault(x => x.Order == user.Level + 1);
 
-            if(nextActivityLevel == null)
+            if(nextActivityLevel == null)   
             {
                 await ReplyAsync("Du hast schon das höchste Level erreich!");
                 return;

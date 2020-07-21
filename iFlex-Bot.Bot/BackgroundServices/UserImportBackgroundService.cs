@@ -26,7 +26,7 @@ namespace iFlex_Bot.Bot.BackgroundServices
             _discord = discord;
             _logger = logger;
 
-            var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(configuration.GetValue<string>("ConnectionString")).Options);
+            var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(configuration.GetValue<string>("TestConnectionString")).Options);
 
             _iFlexDiscordUserRepository = new IFlexDiscordUserRepository(context);
         }
@@ -56,7 +56,7 @@ namespace iFlex_Bot.Bot.BackgroundServices
                     await _logger.LogErrorAsync($"Error occured: {e.Message}", this);
                 }
 
-                await _logger.LogInformationAsync("is running", this);
+                await _logger.LogOptionalAsync("is running", this);
                 await Task.Delay(TimeSpan.FromSeconds(2));
             }
         }

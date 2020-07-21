@@ -1,5 +1,6 @@
 ﻿using Discord;
 using iFlex_Bot.Bot.Services.Contracts;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,18 @@ namespace iFlex_Bot.Bot.Services
 {
     public class LoggerService : ILoggerService
     {
+        private readonly bool _isOptional = false;
+
+        public LoggerService()
+        {
+
+        }
+
+        public LoggerService(bool isOptional)
+        {
+            _isOptional = isOptional;
+        }
+
         public Task LogErrorAsync(LogMessage log)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -92,6 +105,24 @@ namespace iFlex_Bot.Bot.Services
         public Task LogCriticalAsync(string msg, object sender)
         {
             return LogCriticalAsync(new LogMessage(LogSeverity.Critical, sender.GetType().Name, msg));
+        }
+
+        public Task LogOptionalAsync(LogMessage log)
+        {
+            if (_isOptional)
+            {
+                return LogInformationAsync(log);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task LogOptionalAsync(string msg, object sender)
+        {
+            if (_isOptional)
+            {
+                return LogInformationAsync(msg, sender);
+            }
+            return Task.CompletedTask;
         }
 
         public async Task LogAsync(LogMessage log)

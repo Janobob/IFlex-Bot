@@ -19,6 +19,9 @@ namespace iFlex_Bot.Data.Entities
         [Required]
         public int Level { get; set; }
 
+        [Required]
+        public bool AllowMessages { get; set; } = false;
+
         public double PlayTimeInSeconds { get; set; } = 0;
     }
 }

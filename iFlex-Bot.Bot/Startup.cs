@@ -19,6 +19,8 @@ namespace iFlex_Bot.Bot
 {
     public static class Startup
     {
+        private static IConfiguration _configuration;
+
         public static void ConfigureServices(IServiceCollection services)
         {
             IConfiguration configuration = new ConfigurationBuilder()
@@ -26,6 +28,7 @@ namespace iFlex_Bot.Bot
                 .AddJsonFile("appsetting.json", optional: false, reloadOnChange: true)
                 .AddUserSecrets(Assembly.GetEntryAssembly(), optional: true, reloadOnChange: true)
                 .Build();
+            _configuration = configuration;
 
             var botConfiguration = configuration.GetSection("BotConfiguration").Get<BotConfiguration>();
 
@@ -33,7 +36,7 @@ namespace iFlex_Bot.Bot
                 .AddSingleton<CommandService>()
                 .AddSingleton(configuration)
                 .AddSingleton(botConfiguration)
-                .AddApplicationDbContext(configuration.GetValue<string>("ConnectionString"))
+                .AddApplicationDbContext(configuration.GetValue<string>("TestConnectionString"))
                 .AddRepositories()
                 .AddServices()
                 .AddBackgroundServices()
@@ -42,7 +45,7 @@ namespace iFlex_Bot.Bot
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddSingleton<ILoggerService, LoggerService>();
+            services.AddSingleton<ILoggerService>(new LoggerService(_configuration.GetValue<bool>("OptionalLogging")));
             services.AddSingleton<ICommandHandlerService, CommandHandlerService>();
             services.AddSingleton<ILevelService, LevelService>();
 
