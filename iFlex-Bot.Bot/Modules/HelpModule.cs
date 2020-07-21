@@ -40,7 +40,7 @@ namespace iFlex_Bot.Bot.Modules
                 {
                     var result = await cmd.CheckPreconditionsAsync(Context);
                     if (result.IsSuccess)
-                        description += $"{prefix}{string.Join(", ",cmd.Aliases)} - {cmd.Summary}\n";
+                        description += $"{prefix}{string.Join(", ", cmd.Aliases)} \"{string.Join(", ", cmd.Parameters)}\" - {cmd.Summary}\n";
                 }
 
                 if (!string.IsNullOrWhiteSpace(description))
